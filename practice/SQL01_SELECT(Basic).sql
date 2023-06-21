@@ -11,9 +11,13 @@ FROM TB_DEPARTMENT;
 -- 3. 국어 국문학과 여학생중 휴학중인 여학생 찾아달라고 함.
 select student_NAME 
 from tb_student
-WHERE department_no = (select DEPARTMENT_NO FROM tb_department
-                        WHERE department_name = '국어국문학과') AND ABSENCE_YN = 'Y' ;
-    -- 이거 답은 한수현 하나만 있는데... db에는 두명인데..??
+WHERE 
+    department_no = (select DEPARTMENT_NO
+                     FROM tb_department
+                     WHERE department_name = '국어국문학과') 
+    AND ABSENCE_YN = 'Y'
+    AND SUBSTR(STUDENT_SSN, INSTR(STUDENT_SSN, '-') + 1 , 1) = 2;
+ 
 
 -- 4. 도서관에서 대출 도서 장기 연체자 찾아서 이름 게시해달래 대상자 학번이 A513079, A513090, A513091, A513110, A513119 임!
 select student_name
