@@ -386,9 +386,148 @@ order by 2 asc;
 select nullif('123','123') FROM DUAL;
 select nullif('123','456') FROM DUAL;
 
+/*
+    선택함수 : 여러가지 중에 선택을 할 수 있는 기능 제공하는 함수
+    DECODE(컬럼|산술연산|함수식, 조건값1, 결과값1, 조건값2, 결과값2, .... ,)
+    - 비교하고자 하는 값이 조건값과 일치할 경우 그에 해당하는 결과값을 반환해 주는 함수
+*/
+
+-- 사번, 사원명, 주민번호, 성별(남,여) 조회
+select 
+    emp_id,
+    emp_name,
+    DECODE(substr(emp_no,8,1),1, '남',2,'여' ) "성별"
+    FROM employee;
+
+-- 사원명, 직급코드, 기존급여, 인상된급여
+-- 직급 코드가 J7인 사원은 급여 10%인상
+-- J6인 사원은 15%인상
+-- J5인 사원은 20%
+-- 그 외 5%인상
+-- 직급 J1부터 인상된 급여 높은 순으로
+
+select
+    emp_name,
+    job_code,
+    salary,
+    decode(job_code, 'J7' , salary * 1.10, 'j6', salary * 1.15, 'j5', salary * 1.20, salary * 1.05) "인상된급여"
+    FROM employee
+    order by 2 asc,4 desc ;
+    
+/*
+    CASE WHEN 조건식1 THEN 결과값1
+         WHEN 조건식2 THEN 결과값2
+         ...
+         ELSE 결과값N
+         END
+*/
+-- 사번, 사원명, 주민번호, 성별(남,여) 조회
+select 
+    emp_id,
+    emp_name,
+    emp_no,
+    case when substr(emp_no, 8,1) = 1 then '남자'
+         when substr(emp_no, 8,1) = 2 then '여자'
+         else '잘못된 주민번호 임당' 
+         end AS "성별"
+    FROM EMPLOYEE;
+    
+    
+    -- 사원명, 급여, 급여등급 (1 ~ 4) 조회
+    -- 급여 값이 500초과 이면 1
+    -- 350초과 ~ 500 2
+    -- 200초과 ~ 350 3
+    -- 그외4
+select 
+    emp_id,
+    SALARY,
+    case when salary > 5000000 then '1'
+         when salary > 3500000 AND salary <= 5000000 then '2'
+         when salary > 2000000 AND salary <= 3500000 then '3'
+         else '4' 
+         end AS "급여등급"
+    FROM EMPLOYEE;
 
 
+/*
+    그룹함수
+    - 대량의 데이터들로 집계나 통계 같은 작업 처리 하는 경우 사용하는 함수들
+    - 모든 그룹 함수는 NULL값을 자동으로 제외하고 값이 있는 것들만 계산함;
+    
+    sum(NUMBER타입의 컬럼)
+    - 해당 컬럼 값들의 총 합계를 반환
+*/
+-- 전체 사원의 총 급여 합
+select to_char(sum(salary), 'FM999,999,999') "total salary"
+from employee;
 
+-- 부서 코드가 D5인 사원의 총 연봉 합
+select 
+sum(salary * 12)
+from employee
+where DEPT_CODE = 'D5';
+
+
+/*
+    avg(NUMBER)
+    - 해당 컬럼 값들의 평균값을 반환
+    - 모든 그룹함수는 NULL값 제외함 -> avg함수 사용시 NVL사용하는것을 권장;
+*/
+-- 전체 사원의 평균 급여
+select 
+ROUND(avg(NVL( salary,0)), 0)
+from employee;
+
+
+select avg(nvl(bonus,0))
+from employee;
+
+
+/*
+    MIN/MAX (모든 타입의 컬럼)
+    - MIN 컬럼값중 젤 작은거
+    - MAX 컬럼중 젤 큰거
+*/
+
+-- 가장 작은 값에 해당하는 사원명, 급여 입사일
+-- 가장 큰 값에 해당하는 사원명, 급여, 입사일
+select MIN(emp_name), MIN(salary), MIN(hire_date)
+from employee;
+
+select MAX(emp_name), MAX(salary), MAX(hire_date)
+from employee;
+
+/*
+    count(* | 컬럼 | DISTINCT컬럼 )
+    - 컬럼 또는 행의 개수를 세서 반환
+    count(*) : 조회 결과에 해당하는 모든 행 개수 반환
+    count(컬럼) : 해당 컬럼값이 null이 아닌 행 개수 반환
+    count(distinct컬럼) : 중복되지 않은 해당컬럼의 값이 null아닌 행 개수 반환
+*/
+-- 전체 사원 수
+select count(*)
+from employee;
+
+
+-- 보너스 받는 사원의 수
+select count(bonus)
+from employee;
+
+-- 부서가 배치된 사원의 수 
+select count(dept_code)
+from employee;
+
+-- 현재 사원들이 속해 있는 부서 수
+select count(distinct(dept_code))
+from employee;
+
+-- 현재 사원들이 속해 있는 직급 수
+select count(distinct(job_code))
+from employee;
+
+-- 퇴사한 직원 수 
+select count(ent_date)
+from employee;
 
 
 
