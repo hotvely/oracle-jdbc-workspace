@@ -81,7 +81,15 @@ WHERE TG.CLASS_NO = 'C2604100' AND TERM_NO LIKE '%2007%';
 
 
 -- 12. 예체능 계열 과목 중 과목 담당교수를 한 명도 배정받지 못한 과목을 찾아 그 과목 이름과 학과 이름을 출력
+-- 아 어렵네 ㅋㅋ; 일단 방법이 몇개가 생각나긴 하는데.. 차집합으로 TB_CLASS_PROFESSOR에 없는 과목을 TB_CLASS에서 빼준 이후에 나오는 테이블로 작업을
+-- 해도 될것 같기도 하고;
 
+-- 아래 방법 처럼 그냥 조인시키면서 데이터 없는거 NULL로 밀어서 넣어버리고 NULL인 데이터를 조건으로 걸어서 출력해도 되는 것 같네; ㅠㅜㅠ
+SELECT CLASS_NAME, DEPARTMENT_NAME
+FROM TB_CLASS
+LEFT JOIN TB_CLASS_PROFESSOR ON TB_CLASS_PROFESSOR.CLASS_NO = TB_CLASS.CLASS_NO
+JOIN TB_DEPARTMENT ON TB_DEPARTMENT.DEPARTMENT_NO = TB_CLASS.DEPARTMENT_NO
+WHERE TB_DEPARTMENT.CATEGORY = '예체능' AND TB_CLASS_PROFESSOR.PROFESSOR_NO IS NULL;
 
 
 --13. 춘 기술대학교 서반아어학과 학생들의 지도교수를 게시하고자 한다.
@@ -89,13 +97,75 @@ WHERE TG.CLASS_NO = 'C2604100' AND TERM_NO LIKE '%2007%';
 --단, 출력헤더는 “학생이름”, “지도교수” 로 표시하며 고학번 학생이 먼저 표시되도록한다
 SELECT STUDENT_NAME 학생이름, NVL2(COACH_PROFESSOR_NO, PROFESSOR_NAME ,'지도교수 미지정') 지도교수
 FROM TB_STUDENT TS
-JOIN TB_PROFESSOR TP ON TP.PROFESSOR_NO = TS.COACH_PROFESSOR_NO
+LEFT JOIN TB_PROFESSOR TP ON TP.PROFESSOR_NO = TS.COACH_PROFESSOR_NO
 WHERE TS.DEPARTMENT_NO = 020
 ORDER BY ENTRANCE_DATE;
 
 
 --14. 휴학생이 아닌 학생 중 평점이 4.0 이상인 학생을 찾아 그 학생의 학번, 이름, 학과 이름, 평점을 출력
 --단, 평점은 소수점 1자리까지만 반올림하여 표시한다.
+SELECT TB_STUDENT.STUDENT_NO "학번",
+TB_STUDENT.STUDENT_NAME "이름",
+TB_DEPARTMENT.DEPARTMENT_NAME "학과명",
+ROUND(AVG(TB_GRADE.POINT),1) "평균"
+FROM TB_GRADE
+JOIN TB_STUDENT ON TB_STUDENT.STUDENT_NO = TB_GRADE.STUDENT_NO
+JOIN TB_DEPARTMENT ON TB_DEPARTMENT.DEPARTMENT_NO = TB_STUDENT.DEPARTMENT_NO
+WHERE TB_STUDENT.ABSENCE_YN = 'N'
+GROUP BY TB_STUDENT.STUDENT_NO, TB_STUDENT.STUDENT_NAME,TB_DEPARTMENT.DEPARTMENT_NAME
+HAVING AVG(TB_GRADE.POINT) >= 4.0
+ORDER BY TB_STUDENT.STUDENT_NO;
+
+
+-- 15. 환경조경학과 전공과목들의 과목 별 평점을 파악할 수 있는코드 . 단, 평점은 소수점 1자리까지만 반올림하여 표시한다.
+SELECT TB_DEPARTMENT.DEPARTMENT_NAME, TB_CLASS.CLASS_NAME , ROUND(AVG(TB_GRADE.POINT),1)
+FROM TB_GRADE
+JOIN TB_CLASS ON TB_CLASS.CLASS_NO = TB_GRADE.CLASS_NO
+JOIN TB_DEPARTMENT ON TB_CLASS.DEPARTMENT_NO = TB_DEPARTMENT.DEPARTMENT_NO
+WHERE TB_DEPARTMENT.DEPARTMENT_NO = 034 AND TB_CLASS.CLASS_TYPE LIKE '%전공%'
+GROUP BY TB_DEPARTMENT.DEPARTMENT_NAME, TB_GRADE.CLASS_NO,TB_CLASS.CLASS_NAME ;
+
+
+
+-- 16. 춘 기술대학교에 다니고 있는 최경희 학생과 같은 과 학생들의 이름과 주소를 출력하는 SQL문을 작성하시오.
+--최경희 학생의 과 구하기
+SELECT TB_STUDENT.STUDENT_NAME, TB_STUDENT.STUDENT_ADDRESS, TB_STUDENT.DEPARTMENT_NO
+FROM TB_STUDENT
+WHERE 
+(SELECT TB_DEPARTMENT.DEPARTMENT_NO
+FROM TB_DEPARTMENT
+JOIN TB_STUDENT ON TB_STUDENT.DEPARTMENT_NO = TB_DEPARTMENT.DEPARTMENT_NO 
+WHERE TB_STUDENT.STUDENT_NAME LIKE '%최경희%') = TB_STUDENT.DEPARTMENT_NO;
+
+--17. 국어국문학과에서 총 평점이 가장 높은 학생의 이름과 학번을 표시하는 SQL 문을 작성하시오.
+-- 학생별로.. 평균 점수 구해!
+
+-- 아 짱나네 ㅈ닌짜
+select 
+tb_grade.student_no, 
+avg(point),
+tb_student.student_name,
+tb_student.department_no
+
+from tb_grade
+join tb_student on tb_student.student_no = tb_grade.student_no
+where tb_student.department_no = 001
+group by tb_grade.student_no, tb_student.student_name,tb_student.department_no
+
+having avg(point) = (select max(avg(point)) 
+from tb_grade 
+join tb_student on tb_student.student_no = tb_grade.student_no
+where tb_student.department_no = 001 
+group by tb_grade.student_no);
+
+
+
+
+
+
+
+
+
 
 
 
