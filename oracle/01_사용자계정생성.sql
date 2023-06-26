@@ -10,6 +10,22 @@ GRANT RESOURCE, CONNECT TO kh;
 -- TABLESPACE에 대한 권한 부여
 GRANT UNLIMITED TABLESPACE TO kh;
 
+
+
+
+
+---------------------------------DDL관련 계정 생성
+CREATE USER ddl IDENTIFIED by ddl;
+GRANT RESOURCE, CONNECT TO ddl;
+GRANT UNLIMITED TABLESPACE TO ddl;
+---------------------------------DDL관련 계정 생성
+
+
+
+
+
+------------------------------- 과제 관련 사용자 계정
 CREATE USER study IDENTIFIED BY study;
 GRANT RESOURCE, CONNECT TO study;
 GRANT UNLIMITED TABLESPACE TO study;
+------------------------------- 과제 관련 사용자 계정
