@@ -408,10 +408,90 @@ SELECT * FROM MEM;
 
 
 
+-- ON DELETE CASCADE
+ DROP TABLE MEM;
+ CREATE TABLE MEM(
+    MEM_NO NUMBER PRIMARY KEY,
+    MEM_ID VARCHAR(20) NOT NULL UNIQUE,
+    MEM_PWD VARCHAR(20) NOT NULL,
+    MEM_NAME VARCHAR(20) NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')),
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50),
+    GRADE_ID NUMBER REFERENCES MEM_GRADE ON DELETE CASCADE
+ );
+ INSERT INTO MEM VALUES(1, 'user01', 'pass01', '홍길순', '여', NULL, NULL, NULL);
+ INSERT INTO MEM VALUES(2, 'user02', 'pass02', '김말똥', NULL, NULL, NULL, 10);
+ DELETE FROM MEM_GRADE
+ WHERE GRADE_CODE = 10;
+ SELECT * FROM MEM_GRADE;
+ SELECT * FROM MEM;
+ /*
+ DEFAULT 기본값
+    - 제약조건 아님!
+    - 컬럼을 선정하지 않고 INSERT시 NULL이 아닌 기본값을 INSERT 하고자 할 때 세팅해둘 수 있는 값
+    [표현식]
+    컬럼명 자료형 DEFAULT 기본값 [제약조건]
+ */
+ DROP TABLE MEMBER;
+ CREATE TABLE MEMBER(
+    MEM_NO NUMBER PRIMARY KEY,
+    MEM_NAME VARCHAR2(20) NOT NULL,
+    MEM_AGE NUMBER,
+    HOBBY VARCHAR2(20) DEFAULT '없음',
+    ENROLL_DATE DATE DEFAULT SYSDATE
+ );
+ INSERT INTO MEMBER VALUES(1, '강길동', 20, '운동','23/1/1');
+ INSERT INTO MEMBER VALUES(2, '홍길순', NULL, NULL, NULL);
+ INSERT INTO MEMBER VALUES(3, '김말똥', NULL, DEFAULT, DEFAULT);
+-- INSERT INTO MEMBER VALUES(4, '강개순');
+ SELECT * FROM MEMBER;
+ 
+ 
+ --- KH 계정----------------------------------------------------------------------------------------------------------------------
+ /*
+    서브쿼리를 이용한 테이블 생성
+    - 테이블 복사하는 개념
+    [표현식]
+    CREATE TABLE 테이블명
+    AS 서브쿼리;
+ */
+ CREATE TABLE EMPLOYEE_COPY
+ AS SELECT * FROM EMPLOYEE;
+ SELECT * FROM EMPLOYEE_COPY;
+ CREATE TABLE EMPLOYEE_COPY2
+ AS SELECT EMP_ID, EMP_NAME, SALARY, BONUS
+ FROM EMPLOYEE
+ WHERE 1 = 0;    -- 이 조건이 달리면 데이터값 복사 안됨! -> 구조만 복사하고자 할 때 쓰이는 구문
+ SELECT * FROM EMPLOYEE_COPY2;
+ CREATE TABLE EMPLOYEE_COPY3
+ AS SELECT EMP_ID, EMP_NAME, SALARY, SALARY*12 AS "연봉"
+ FROM EMPLOYEE;
+ SELECT * FROM EMPLOYEE_COPY3;
+ -----------------------------------------------------------------------------------------------------------------------------
 
 
-
-
+/*
+    DB 모델링 작업 순서
+    1. 개념적 모델링 
+        - 엔티티 추출
+        - 엔티티 간 관계설정 (객체 관계 설정)
+    2. 논리적 모델링
+        - 속성 추출
+        - 정규화 작업 (1, 2, 3)
+    3. 물리적 모델링
+        - 테이블 실질적으로 작성 (EX 오라클 테이블 작성하는 것)
+        
+        
+    * 정규화 (Nomalization)
+        - 불필요한 데이터의 중복을 제거해서 데이터 모델을 구조화 하는 것
+        - 효율적인 자료 저장 및 데이터 무결성을 보장하고 오류를 최소화 하여 안정성을 보장하기 위해 적용함
+        
+        제1 정규화 : 복수의 속성값을 갖는 속성을 분리
+        제2 정규화 : 주 식별자에 종속되지 않는 속성을 분리
+        제3 정규화 : 속성에 종속적인 속성을 제거
+        
+*/
 
 
 
