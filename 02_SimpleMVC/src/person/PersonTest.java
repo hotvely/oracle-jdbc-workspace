@@ -53,11 +53,13 @@ public class PersonTest {
 		String seqQuery = p.getProperty("jdbc.sql.seq");
 		PreparedStatement pt2 = conn.prepareStatement(seqQuery);
 		ResultSet rsSeq = pt2.executeQuery();
-
+		
 		if(rsSeq.next())
 		{
+			// 시퀀스 번호 가져오는..?
 			System.out.println(rsSeq.getInt(1));				
 		}
+		
 		pt.setInt(1, rsSeq.getInt(1));
 		pt.setString(2, name);
 		pt.setString(3, address);
@@ -86,6 +88,34 @@ public class PersonTest {
 	
 	}
 	
+	public void removeAllPerson() throws SQLException
+	{
+		Connection conn = getConnect();
+		String query = p.getProperty("jdbc.sql.deleteAll");
+		PreparedStatement pt = conn.prepareStatement(query);
+		int result = pt.executeUpdate();
+		System.out.println(result + "명 삭제완료!");
+		
+		query = p.getProperty("jdbc.sql.existSeq");
+		pt = conn.prepareStatement(query);
+		result = pt.executeUpdate();
+		if(result != 0)
+		{
+			query = p.getProperty("jdbc.sql.seqDrop");
+			pt = conn.prepareStatement(query);
+			
+			pt.executeUpdate();
+			System.out.println("시퀀스 삭제 완료 !");
+		}
+		else			
+		{
+			System.out.println("현재 지금 시퀀스가 존재 하지 않음.");
+		}
+		
+
+		
+	}
+	
 	public void updatePerson(int id, String address) throws SQLException
 	{
 		Connection conn = getConnect();		
@@ -102,6 +132,7 @@ public class PersonTest {
 		
 	}
 	
+	
 	// 전체 보기
 	public void searchAllPerson() throws SQLException
 	{
@@ -116,10 +147,9 @@ public class PersonTest {
 		while(rs.next())
 		{
 			System.out.println("ID : " + rs.getInt("ID") + "\tNAME : " + rs.getString("name") + "\tADDRESS : " + rs.getString("address"));
-		}
-		
-		
+		}		
 	}
+	
 	
 	// 입력받은 id사람 정보 확인
 	public void viewPerson(int id) throws SQLException
@@ -158,6 +188,8 @@ public class PersonTest {
 		PersonTest pt = new PersonTest();
 		
 		try {
+//			pt.removeAllPerson();
+			
 			pt.addPerson("강아지", "서울");
 			pt.addPerson("고양이", "세종시");
 			pt.addPerson("너구리", "북한산");
