@@ -29,3 +29,25 @@ CREATE USER study IDENTIFIED BY study;
 GRANT RESOURCE, CONNECT TO study;
 GRANT UNLIMITED TABLESPACE TO study;
 ------------------------------- 과제 관련 사용자 계정
+
+
+
+
+
+-------------------------------- jdbc 관련 계정
+CREATE USER jdbc IDENTIFIED BY jdbc;
+GRANT RESOURCE, CONNECT TO jdbc;
+GRANT UNLIMITED TABLESPACE TO jdbc;
+-------------------------------- jdbc 관련 계정
+
+
+
+
+
+
+
+
+
+
+
+

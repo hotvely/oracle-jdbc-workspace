@@ -69,7 +69,7 @@ INSERT INTO BANK VALUES('김도경', '국민은행', 1000000);
 INSERT INTO BANK VALUES('김민소', '신한은행', 500000);
 
 
-
+SELECT BALANCE FROM bank WHERE name = '김도경';
 
 
 
