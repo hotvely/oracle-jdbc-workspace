@@ -41,6 +41,10 @@ public class MemberController {
 		
 		try
 		{
+//			if(dao.getMember(m.getId()) == null)
+//			{
+//				dao.registerMember(m);
+//			}
 			Connection conn = dao.getConnect();
 			PreparedStatement st;
 			String query;
