@@ -201,11 +201,12 @@ public class BookDAO implements BookDAOTemplate {
 		
 		query = p.getProperty("TB_MEMBER_UPDATE_STATUS");
 		st = conn.prepareStatement(query);
-		st.setString(1, "Y");
-		st.setString(2, id);
+
+		st.setString(1, id);
 		
+		int result = st.executeUpdate();
 		closeAll(st, conn);
-		return st.executeUpdate();		
+		return result;	
 	}
 
 	@Override
