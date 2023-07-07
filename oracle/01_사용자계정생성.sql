@@ -41,6 +41,11 @@ GRANT UNLIMITED TABLESPACE TO jdbc;
 -------------------------------- jdbc 관련 계정
 
 
+-------------------------------- youtube 관련 계정
+CREATE USER youtube IDENTIFIED BY youtube;
+GRANT RESOURCE, CONNECT TO youtube;
+GRANT UNLIMITED TABLESPACE TO youtube;
+-------------------------------- youtube 관련 계정
 
 
 
