@@ -49,10 +49,10 @@ GRANT UNLIMITED TABLESPACE TO youtube;
 
 
 
-
-
-
-
+-------------------------freepets
+CREATE USER FREEPETS IDENTIFIED BY freepets;
+GRANT RESOURCE, CONNECT, UNLIMITED TABLESPACE TO FREEPETS;
+-------------------------freepets
 
 
 
