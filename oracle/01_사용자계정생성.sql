@@ -54,5 +54,28 @@ CREATE USER FREEPETS IDENTIFIED BY freepets;
 GRANT RESOURCE, CONNECT, UNLIMITED TABLESPACE TO FREEPETS;
 -------------------------freepets
 
+CREATE USER testServletJDBC IDENTIFIED BY 1234;
+GRANT RESOURCE, CONNECT, UNLIMITED TABLESPACE TO testServletJDBC;
+
+
+----------- WEB DB 연동하기 위한 DB 계정
+
+
+
+-------------------------freepets
+CREATE USER spring IDENTIFIED BY spring;
+GRANT RESOURCE, CONNECT, UNLIMITED TABLESPACE TO FREEPETS;
+-------------------------freepets
+
+
+
+
+
+
+
+
+
+
+
 
 
